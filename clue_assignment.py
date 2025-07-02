@@ -6,9 +6,8 @@ import pandas as pd
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-# ------------------------------------------
+
 # 1. Generate synthetic event data
-# ------------------------------------------
 
 EVENT_TYPES = ["log_period", "log_mood", "log_pain"]
 MOOD_VALUES = ["happy", "sad", "neutral"]
@@ -34,11 +33,9 @@ synthetic_data = [generate_event() for _ in range(100)]
 with open("raw_events.json", "w") as f:
     json.dump(synthetic_data, f, indent=2)
 
-print("✅ Synthetic health events written to raw_events.json")
+print("Synthetic health events written to raw_events.json")
 
-# ------------------------------------------
 # 2. Load and validate events
-# ------------------------------------------
 
 def validate_event(event: dict) -> dict:
     """
@@ -76,9 +73,7 @@ for ev in raw_events:
         # In prod you might push this to Sentry or CloudWatch
         print(f"[Validation error] {e}")
 
-# ------------------------------------------
 # 3. Transform into analytics-ready schema
-# ------------------------------------------
 
 df = pd.DataFrame(validated)
 
@@ -96,5 +91,5 @@ if not all(col in df.columns for col in expected_columns):
 arrow_table = pa.Table.from_pandas(df)
 pq.write_table(arrow_table, "clean_events.parquet")
 
-print("✅ Clean events saved to clean_events.parquet")
+print("Clean events saved to clean_events.parquet")
 
